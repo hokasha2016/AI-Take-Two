@@ -1,3 +1,5 @@
+import sys as sys
+
 class AdjNode:
     def __init__(self, data):
         self.vertex = data
@@ -39,9 +41,11 @@ class Graph:
             print(" \n")
 
         # Driver program to the above graph class
-
+#number of nodes, nodes as Boolean variables, arcs, and probability tables on nodes
+# (prior probability on source nodes, conditional probabilities on other nodes).
 
 def main():
+
     V = 5
     graph = Graph(V)
     graph.add_edge(0, 1)
@@ -56,4 +60,9 @@ def main():
 
 
 if __name__ == "__main__":
+    print(sys.argv[0])
+    print(sys.argv[1])
+    print(sys.argv[2])
+    print(sys.argv[3])
+    print(sys.argv[4]) #ERROR-- NOT BEING PRINTED
     main()
