@@ -3,7 +3,6 @@ import sys as sys
 from collections import defaultdict
 
 class NodeD():
-
     def __init__(self, pos,bool):
         self.nodeDic={
             "name":pos,
@@ -12,8 +11,8 @@ class NodeD():
         }
     def setNext(self, newpos):
         self.nodeDic["next"]=newpos
-        print(self.nodeDic["next"])
-        print(self.nodeDic)
+       # print(self.nodeDic["next"])
+       # print(self.nodeDic)
 
 
 class Graph():
@@ -74,7 +73,7 @@ class Graph():
     def print_graph(self):
         for i in range(self.V):
             print("Adjacency list of vertex {}\n head".format(i), end="")
-            temp = self.graph[i]
+            temp = self.graph[i].nodeDic
             print(temp)
             print(" \n")
 
@@ -94,14 +93,16 @@ def main(n):
     g.addEdge(1, 4, True)
     g.addEdge(2, 3, False)
     g.addEdge(3, 4, True)
-    g.addEdge(0, 2, False)
-    g.addEdge(2, 0, True)
+    ####above is no cycle
+    #g.addEdge(0, 2, False)
+    #g.addEdge(2, 0, True)
+    #######including this is a cycle
     if g.isCyclic() == 1:
         print("Graph has a cycle")
     else:
         print("Graph has no cycle")
 
-    g.print_graph()
+    #g.print_graph()
 
 
         # Driver program to the above graph class
