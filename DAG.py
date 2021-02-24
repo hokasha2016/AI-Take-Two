@@ -3,17 +3,21 @@ import sys as sys
 from collections import defaultdict
 
 class NodeD():
-    def __init__(self, pos,bool):
+    def __init__(self, bool):
+
         self.nodeDic={
-            "name":pos,
+            "name":0,
             "boolean":bool,
-            "next":0
+            "next":[]
         }
     def setNext(self, newpos):
-        self.nodeDic["next"]=newpos
+        self.nodeDic["next"].append(newpos)
+        print("added new dest: "+str(newpos)+" -- to node: "+str(self.nodeDic["name"]))
        # print(self.nodeDic["next"])
        # print(self.nodeDic)
-
+    def setPos(self, position):
+        self.nodeDic["name"]=position
+        print("added node: "+str(position))
 
 class Graph():
     def __init__(self, vertices):
@@ -22,16 +26,26 @@ class Graph():
 
     #def
     def addEdge(self, src, dest, bool):
-        node = NodeD(dest,bool)
-        node.next = self.graph[src]
-        self.graph[src] = node
-
-        # Adding the source node to the destination as
-        # it is the undirected graph
-        node = NodeD(src,bool)
-        node.next = self.graph[dest]
-        self.graph[dest] = node
-        node.setNext(dest)
+        exists=False
+        node = NodeD(bool)
+        for node1 in self.graph:
+            if node1 and node1.nodeDic["name"]==src:
+                exists=True
+                print(str(src) +" : Does exist")
+            else:
+                print(str(src) + " : Does NOT exist")
+        if exists==True:
+            node=self.graph[src]
+            print(str(src) +": EXISTS")
+            node.setNext(dest)
+        else:
+            print(str(src) + ": doesn't exist")
+            node.setPos(src)
+            node.next = self.graph[src]
+            self.graph[src] = node
+            node.next = self.graph[dest]
+            self.graph[dest] = node
+            node.setNext(dest)
 
     def isCyclicUtil(self, v, visited, recStack):
 
@@ -43,16 +57,12 @@ class Graph():
         # Recur for all neighbours
         # if any neighbour is visited and in
         # recStack then graph is cyclic
-        hood = []
-        for node in self.graph:
-            if node.nodeDic["name"] == v:
-                hood.append(node.nodeDic["next"])
 
-        for neighbour in hood:
-            if visited[neighbour]==False:
-                if self.isCyclicUtil(neighbour, visited, recStack)==True:
+        for neighbour in self.graph[v].nodeDic["next"]:
+            if not visited[neighbour]:
+                if self.isCyclicUtil(neighbour, visited, recStack):
                     return True
-            elif recStack[neighbour]==True:
+            elif recStack[neighbour]:
                 return True
 
         # The node needs to be poped from
@@ -71,9 +81,9 @@ class Graph():
         return False
 
     def print_graph(self):
-        for i in range(self.V):
-            print("Adjacency list of vertex {}\n head".format(i), end="")
-            temp = self.graph[i].nodeDic
+        for i in self.graph:
+            print("Adjacency list of vertex {}\n head".format(i.nodeDic["name"]), end="")
+            temp = i.nodeDic
             print(temp)
             print(" \n")
 
@@ -97,12 +107,13 @@ def main(n):
     #g.addEdge(0, 2, False)
     #g.addEdge(2, 0, True)
     #######including this is a cycle
+
     if g.isCyclic() == 1:
         print("Graph has a cycle")
     else:
         print("Graph has no cycle")
 
-    #g.print_graph()
+    g.print_graph()
 
 
         # Driver program to the above graph class
