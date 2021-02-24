@@ -12,12 +12,12 @@ class NodeD():
         }
     def setNext(self, newpos):
         self.nodeDic["next"].append(newpos)
-        print("added new dest: "+str(newpos)+" -- to node: "+str(self.nodeDic["name"]))
+        #print("added new dest: "+str(newpos)+" -- to node: "+str(self.nodeDic["name"]))
        # print(self.nodeDic["next"])
        # print(self.nodeDic)
     def setPos(self, position):
         self.nodeDic["name"]=position
-        print("added node: "+str(position))
+        #print("added node: "+str(position))
 
 class Graph():
     def __init__(self, vertices):
@@ -27,25 +27,33 @@ class Graph():
     #def
     def addEdge(self, src, dest, bool):
         exists=False
+        checNode=False
         node = NodeD(bool)
         for node1 in self.graph:
             if node1 and node1.nodeDic["name"]==src:
                 exists=True
-                print(str(src) +" : Does exist")
-            else:
-                print(str(src) + " : Does NOT exist")
+                #print(str(src) +" : Does exist")
+            #else:
+                #print(str(src) + " : Does NOT exist")
         if exists==True:
             node=self.graph[src]
-            print(str(src) +": EXISTS")
+            #print(str(src) +": EXISTS")
             node.setNext(dest)
         else:
-            print(str(src) + ": doesn't exist")
+           # print(str(src) + ": doesn't exist")
             node.setPos(src)
             node.next = self.graph[src]
             self.graph[src] = node
             node.next = self.graph[dest]
             self.graph[dest] = node
             node.setNext(dest)
+        for node3 in self.graph:
+            if node3 and node3.nodeDic["name"]==dest:
+                checNode=True
+        if checNode==False:
+            temp = NodeD(False)
+            temp.nodeDic["name"] = dest
+            self.graph[dest] = temp
 
     def isCyclicUtil(self, v, visited, recStack):
 
@@ -59,11 +67,14 @@ class Graph():
         # recStack then graph is cyclic
 
         for neighbour in self.graph[v].nodeDic["next"]:
-            if not visited[neighbour]:
-                if self.isCyclicUtil(neighbour, visited, recStack):
+            if not self.graph[v].nodeDic["next"]:
+                return False
+            else:
+                if not visited[neighbour]:
+                    if self.isCyclicUtil(neighbour, visited, recStack):
+                        return True
+                elif recStack[neighbour]:
                     return True
-            elif recStack[neighbour]:
-                return True
 
         # The node needs to be poped from
         # recursion stack before function ends
@@ -86,6 +97,8 @@ class Graph():
             temp = i.nodeDic
             print(temp)
             print(" \n")
+
+   # def levelDepth(self,count,):
 
 
                 # Driver program to the above graph class
