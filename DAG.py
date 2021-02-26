@@ -45,14 +45,16 @@ class Graph():
             node = self.graph[src]
             # print(str(src) +": EXISTS")
             node.setNext(dest)
+            node.setBool(boolie)
         else:
             # print(str(src) + ": doesn't exist")
             node.setPos(src)
+            node.setNext(dest)
+            node.setBool(boolie)
             node.next = self.graph[src]
             self.graph[src] = node
             node.next = self.graph[dest]
             self.graph[dest] = node
-            node.setNext(dest)
         for node3 in self.graph:
             if node3 and node3.nodeDic["name"] == dest:
                 checNode = True
