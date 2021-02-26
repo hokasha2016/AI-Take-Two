@@ -130,13 +130,16 @@ class Graph():
             count += 1
             if count > depth_count:
                  depth_count = count
-            self.levelDepthUtil(neighbour, count, depth_count)
+            depth_count = self.levelDepthUtil(neighbour, count, depth_count)
         return depth_count
 
     def levelDepth(self):
-        depth_count = 0
-        depth_count = self.levelDepthUtil(0, 0, depth_count)
-        print("Lowest depth is: " + str(depth_count))
+        if self.isCyclic() == 0:
+            depth_count = 0
+            depth_count = self.levelDepthUtil(0, 0, depth_count)
+            print("Lowest depth is: " + str(depth_count))
+        else:
+            print("Graph is cyclic! Depth can be infinite!")
 
 # Driver program to the above graph class
 
@@ -187,11 +190,11 @@ def main():
         g = Graph(5)
         g.addEdge(0, 1, False)
         g.addEdge(0, 4, False)
-        #g.addEdge(1, 2, True)
-        #g.addEdge(1, 3, False)
-        #g.addEdge(1, 4, True)
-        #g.addEdge(2, 3, False)
-        #g.addEdge(3, 4, True)
+        g.addEdge(1, 2, True)
+        g.addEdge(1, 3, False)
+        g.addEdge(1, 4, True)
+        g.addEdge(2, 3, False)
+        g.addEdge(3, 4, True)
 
         ####above is no cycle
         # g.addEdge(0, 2, False)
