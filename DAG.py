@@ -11,7 +11,7 @@ class NodeD:
             "nodePos": 0,
             "booleanState": Boolie,
             "destNode": [],
-            "Probability Value": 0
+            "Probability Value": []
         }
 
     # node dictionary Setter's
@@ -121,9 +121,8 @@ class Graph:
                     return True
         return False
 
-
+    # Prints graph based on number of vertices and their stored information
     def print_graph(self):
-        # Prints graph based on number of vertices and their stored information
         for i in self.graph:
             if i:
                 print("Adjacency list of vertex {}\n".format(i.nodeDic["nodePos"]), end="")
@@ -133,7 +132,7 @@ class Graph:
             else:
                 print("ERROR: Unable to print, Vertex position does not exist!")
 
-
+    # recursive function used by levelDepth
     def levelDepthUtil(self, v, count, depth_count):
         for neighbour in self.graph[v].nodeDic["destNode"]:
             count += 1
@@ -142,6 +141,7 @@ class Graph:
             depth_count = self.levelDepthUtil(neighbour, count, depth_count)
         return depth_count
 
+    # finds maximum depth of the graph
     def levelDepth(self):
         try:
             if self.isCyclic()==0:
@@ -165,7 +165,15 @@ class Graph:
         elif a.capitalize()=="F":
             return False
 
+    # finds all parent nodes of vertex v
+    def findParents(self, v):
+        parents = []
+        for node in self.graph:
+            if v.nodeDic["nodePos"] in node.nodeDic["destNode"]:
+                parents.append(node.nodeDic["nodePos"])
+        return parents
 
+# main function that calls everything
 def main():
     parser = argparse.ArgumentParser(description='Process args')
     parser.add_argument('--userinput', '-u', type=int,
@@ -173,32 +181,51 @@ def main():
     args = parser.parse_args()
 
     if args.userinput and int(args.userinput) > 0:
-        # if user wants manual input
-        val = input("Enter number of verticies in the graph: ")
-        g = Graph(int(val))
-        print("To stop adding edges to the graph, enter 0 for src and 0 for dest")
-        count = 0
-        while True:
-            # this while loop asks for src, dest and bool, then inputs it as an edge
-            print("Vertex " + str(count) + ": ")
-            src = int(input("Enter source vertex: "))
-            dest = int(input("Enter destination vertex: "))
-            boolIn = str(input("Enter boolean value for this vertex: "))
-            boolState = g.boolCheck(boolIn)
-            if src==0 and dest==0:
-                break
-            else:
-                g.addEdge(src, dest, boolState)
+        if args.userinput < 2:
+            # if user wants manual input
+            val = input("Enter number of verticies in the graph: ")
+            g = Graph(int(val))
+            print("To stop adding edges to the graph, enter 0 for src and 0 for dest")
+            while True:
+                # this while loop asks for src, dest and bool, then inputs it as an edge
+                src = int(input("Enter source vertex: "))
+                dest = int(input("Enter destination vertex: "))
+                boolIn = str(input("Enter boolean value for this vertex: "))
+                boolState = g.boolCheck(boolIn)
+                if src==0 and dest==0:
+                    break
+                else:
+                    g.addEdge(src, dest, boolState)
 
-            if g.isCyclic()==1:
-                # if user graph is cyclic from most recent edge, removed most recent edge
-                print("That edge makes the graph cyclic! This edge will be removed.")
-                g.delEdge(src, dest)
+                if g.isCyclic()==1:
+                    # if user graph is cyclic from most recent edge, removed most recent edge
+                    print("That edge makes the graph cyclic! This edge will be removed.")
+                    g.delEdge(src, dest)
 
-            count += 1
-            print(" ")
+                print(" ")
+        else:
+            # user wants to skip adding edges
+            g = Graph(5)
+            g.addEdge(0, 1, False)
+            g.addEdge(0, 4, False)
+            g.addEdge(1, 2, True)
+            g.addEdge(1, 3, False)
+            g.addEdge(1, 4, True)
+            g.addEdge(2, 3, False)
+            g.addEdge(3, 4, True)
 
-    else:
+        if args.userinput < 3:
+            # get probability input from user
+            print("Now cycling through all nodes to get probability input for each node.")
+            for node in g.graph:
+                val = []
+                parents = g.findParents(node)
+                if not parents:
+                    val.append(input("Input probability value for root node: "))
+                    node.setProbValue(val)
+
+
+    if not args.userinput:
         # default graph
         g = Graph(5)
         g.addEdge(0, 1, False)
@@ -218,7 +245,6 @@ def main():
             print("Graph has a cycle")
         else:
             print("Graph has no cycle")
-
 
     g.print_graph()
     g.levelDepth()
