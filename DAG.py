@@ -4,16 +4,16 @@ import argparse
 from collections import defaultdict
 
 
-class NodeD():
-    def __init__(self, bool):
+class NodeD:
+    def __init__(self, Boolie):
         self.nodeDic = {
             "name": 0,
-            "boolean": bool,
+            "booleanState": Boolie,
             "next": []
         }
 
-    def setNext(self, newpos):
-        self.nodeDic["next"].append(newpos)
+    def setNext(self, newPos):
+        self.nodeDic["next"].append(newPos)
         # print("added new dest: "+str(newpos)+" -- to node: "+str(self.nodeDic["name"]))
         # print(self.nodeDic["next"])
         # print(self.nodeDic)
@@ -22,16 +22,19 @@ class NodeD():
         self.nodeDic["name"] = position
         # print("added node: "+str(position))
 
+    def setBool(self, Boolie):
+        self.nodeDic["booleanState"] = Boolie
+
 
 class Graph():
     def __init__(self, vertices):
         self.V = vertices
         self.graph = [None] * self.V
 
-    def addEdge(self, src, dest, bool):
+    def addEdge(self, src, dest, boolie):
         exists = False
         checNode = False
-        node = NodeD(bool)
+        node = NodeD(boolie)
         for node1 in self.graph:
             if node1 and node1.nodeDic["name"] == src:
                 exists = True
@@ -60,19 +63,21 @@ class Graph():
 
     def delEdge(self, src, dest):
         # search for src in graph
-        for node in self.graph:
-            if node.nodeDic["name"] == src:
-                Node = node
+        for node2 in self.graph:
+            if node2 and node2.nodeDic["name"] == src:
+                Node = node2
                 break
 
         # remove dest from node list
-        Node.nodeDic["next"].remove(dest)
-
+        try:
+            Node.nodeDic["next"].remove(dest)
+        except Node:
+            print("ERROR: unable to remove edge, Vertex not found")
 
     def isCyclicUtil(self, v, visited, recStack):
-
         # Mark current node as visited and
         # adds to recursion stack
+
         visited[v] = True
         recStack[v] = True
 
@@ -110,19 +115,27 @@ class Graph():
 
     def print_graph(self):
         for i in self.graph:
-            print("Adjacency list of vertex {}\n head".format(i.nodeDic["name"]), end="")
-            temp = i.nodeDic
-            print(temp)
-            print(" \n")
+            try:
+                print("Adjacency list of vertex {}\n head".format(i.nodeDic["name"]), end="")
+                temp = i.nodeDic
+                print(temp)
+                print(" \n")
+            except i:
+                print("ERROR: Unable to print, Vertex position does not exist!")
 
 
 # def levelDepth(self,count,):
-
 
 # Driver program to the above graph class
 
 # number of nodes, nodes as Boolean variables, arcs, and probability tables on nodes
 # (prior probability on source nodes, conditional probabilities on other nodes).
+    def boolCheck(self, a):
+        if a.capitalize() == "T":
+            return True
+        elif a.capitalize() == "F":
+            return False
+
 
 def main():
     parser = argparse.ArgumentParser(description='Process args')
@@ -136,24 +149,26 @@ def main():
         val = input("Enter number of verticies in the graph: ")
         g = Graph(int(val))
         print("To stop adding edges to the graph, enter 0 for src and 0 for dest")
-
+        count = 0
         while True:
             # this while loop asks for src, dest and bool, then inputs it as an adge
-            src = int(input("Enter src vertex: "))
-            dest = int(input("Enter dest vertex: "))
-            boolean = bool(input("Enter boolean for src vertex: "))
-
-            if str(src) == str(0) and str(dest) == str(0):
-                # break the while loop if user wants to stop
+            print("Vertex "+str(count)+": ")
+            src = int(input("Enter source vertex: "))
+            dest = int(input("Enter destination vertex: "))
+            boolIn = str(input("Enter boolean value for this vertex: "))
+            boolState = g.boolCheck(boolIn)
+            if src == 0 and dest == 0:
                 break
-            g.addEdge(src, dest, boolean)
+            else:
+                g.addEdge(src, dest, boolState)
 
             if g.isCyclic() == 1:
                 # if user graph is cyclic from most recent edge, removed most recent edge
                 print("That edge makes the graph cyclic! This edge will be removed.")
                 g.delEdge(src, dest)
-                
-        g.print_graph()
+
+            count += 1
+            print(" ")
 
     else:
         # default graph
@@ -176,7 +191,7 @@ def main():
         else:
             print("Graph has no cycle")
 
-        g.print_graph()
+    g.print_graph()
 
     # Driver program to the above graph class
 
