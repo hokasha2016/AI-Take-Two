@@ -3,7 +3,6 @@ import argparse
 
 from collections import defaultdict
 
-
 class NodeD:
     def __init__(self, Boolie):
         self.nodeDic = {
@@ -27,6 +26,7 @@ class NodeD:
 
 
 class Graph():
+
     def __init__(self, vertices):
         self.V = vertices
         self.graph = [None] * self.V
@@ -113,18 +113,30 @@ class Graph():
                     return True
         return False
 
+
     def print_graph(self):
         for i in self.graph:
-            try:
+            if i:
                 print("Adjacency list of vertex {}\n head".format(i.nodeDic["name"]), end="")
                 temp = i.nodeDic
                 print(temp)
                 print(" \n")
-            except i:
+            else:
                 print("ERROR: Unable to print, Vertex position does not exist!")
 
 
-# def levelDepth(self,count,):
+    def levelDepthUtil(self, v, count, depth_count):
+        for neighbour in self.graph[v].nodeDic["next"]:
+            count += 1
+            if count > depth_count:
+                 depth_count = count
+            self.levelDepthUtil(neighbour, count, depth_count)
+        return depth_count
+
+    def levelDepth(self):
+        depth_count = 0
+        depth_count = self.levelDepthUtil(0, 0, depth_count)
+        print("Lowest depth is: " + str(depth_count))
 
 # Driver program to the above graph class
 
@@ -175,11 +187,11 @@ def main():
         g = Graph(5)
         g.addEdge(0, 1, False)
         g.addEdge(0, 4, False)
-        g.addEdge(1, 2, True)
-        g.addEdge(1, 3, False)
-        g.addEdge(1, 4, True)
-        g.addEdge(2, 3, False)
-        g.addEdge(3, 4, True)
+        #g.addEdge(1, 2, True)
+        #g.addEdge(1, 3, False)
+        #g.addEdge(1, 4, True)
+        #g.addEdge(2, 3, False)
+        #g.addEdge(3, 4, True)
 
         ####above is no cycle
         # g.addEdge(0, 2, False)
@@ -190,6 +202,8 @@ def main():
             print("Graph has a cycle")
         else:
             print("Graph has no cycle")
+
+        g.levelDepth()
 
     g.print_graph()
 
