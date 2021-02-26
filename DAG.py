@@ -3,51 +3,55 @@ import argparse
 
 from collections import defaultdict
 
+
+####NODE OBJECT###
 class NodeD:
-    def __init__(self, Boolie):
+    def __init__(self, Boolie):  # Makes node dictionary object
         self.nodeDic = {
-            "name": 0,
+            "nodePos": 0,
             "booleanState": Boolie,
-            "next": []
+            "destNode": [],
+            "Probability Value": 0
         }
 
-    def setNext(self, newPos):
-        self.nodeDic["next"].append(newPos)
-        # print("added new dest: "+str(newpos)+" -- to node: "+str(self.nodeDic["name"]))
-        # print(self.nodeDic["next"])
-        # print(self.nodeDic)
+    # node dictionary Setter's
+    def setNext(self, newPos):  # adds new destination node for current node
+        self.nodeDic["destNode"].append(newPos)
 
-    def setPos(self, position):
-        self.nodeDic["name"] = position
-        # print("added node: "+str(position))
+    def setPos(self, position):  # sets/modifies nodePos of node
+        self.nodeDic["nodePos"] = position
 
-    def setBool(self, Boolie):
+    def setBool(self, Boolie):  # sets/modifies boolean value of node
         self.nodeDic["booleanState"] = Boolie
+    
+    def setProbValue(self,v): # sets/modifies Probability Value
+        self.nodeDic["Probability Value"] = v
 
 
-class Graph():
+class Graph:
 
-    def __init__(self, vertices):
+    def __init__(self, vertices):  # initalizes graph which is an empty list size of number of verticies
         self.V = vertices
         self.graph = [None] * self.V
 
-    def addEdge(self, src, dest, boolie):
+    def addEdge(self, src, dest, boolie):  # stores/ generates new node edge into the graph
         exists = False
         checNode = False
-        node = NodeD(boolie)
+        node = NodeD(boolie)  # makes empty node
+        # Flips flag for finding previously existing node
         for node1 in self.graph:
-            if node1 and node1.nodeDic["name"] == src:
+            if node1 and node1.nodeDic["nodePos"]==src:
                 exists = True
-                # print(str(src) +" : Does exist")
-            # else:
-            # print(str(src) + " : Does NOT exist")
+
+        # if node already exists, modify
         if exists:
+            # adds the new dest node to list of destNode nodes,
+            # and sets boolean Value based on input
             node = self.graph[src]
-            # print(str(src) +": EXISTS")
             node.setNext(dest)
             node.setBool(boolie)
         else:
-            # print(str(src) + ": doesn't exist")
+            # makes new Node and stores new Info
             node.setPos(src)
             node.setNext(dest)
             node.setBool(boolie)
@@ -55,24 +59,26 @@ class Graph():
             self.graph[src] = node
             node.next = self.graph[dest]
             self.graph[dest] = node
+
+        # Checks to see if destination node exists, flips "checNode" flag
         for node3 in self.graph:
-            if node3 and node3.nodeDic["name"] == dest:
+            if node3 and node3.nodeDic["nodePos"]==dest:
                 checNode = True
+        # If dest node doesnt exist, make False empty node with nodePos of dest node
         if not checNode:
             temp = NodeD(False)
-            temp.nodeDic["name"] = dest
+            temp.nodeDic["nodePos"] = dest
             self.graph[dest] = temp
 
     def delEdge(self, src, dest):
         # search for src in graph
         for node2 in self.graph:
-            if node2 and node2.nodeDic["name"] == src:
+            if node2 and node2.nodeDic["nodePos"]==src:
                 Node = node2
                 break
-
         # remove dest from node list
         try:
-            Node.nodeDic["next"].remove(dest)
+            Node.nodeDic["destNode"].remove(dest)
         except Node:
             print("ERROR: unable to remove edge, Vertex not found")
 
@@ -90,8 +96,8 @@ class Graph():
         if not self.graph[v]:
             return False
 
-        for neighbour in self.graph[v].nodeDic["next"]:
-            if not self.graph[v].nodeDic["next"]:
+        for neighbour in self.graph[v].nodeDic["destNode"]:
+            if not self.graph[v].nodeDic["destNode"]:
                 return False
             else:
                 if not visited[neighbour]:
@@ -117,9 +123,10 @@ class Graph():
 
 
     def print_graph(self):
+        # Prints graph based on number of vertices and their stored information
         for i in self.graph:
             if i:
-                print("Adjacency list of vertex {}\n head".format(i.nodeDic["name"]), end="")
+                print("Adjacency list of vertex {}\n".format(i.nodeDic["nodePos"]), end="")
                 temp = i.nodeDic
                 print(temp)
                 print(" \n")
@@ -128,37 +135,41 @@ class Graph():
 
 
     def levelDepthUtil(self, v, count, depth_count):
-        for neighbour in self.graph[v].nodeDic["next"]:
+        for neighbour in self.graph[v].nodeDic["destNode"]:
             count += 1
             if count > depth_count:
-                 depth_count = count
+                depth_count = count
             depth_count = self.levelDepthUtil(neighbour, count, depth_count)
         return depth_count
 
     def levelDepth(self):
-        if self.isCyclic() == 0:
-            depth_count = 0
-            depth_count = self.levelDepthUtil(0, 0, depth_count)
-            print("Lowest depth is: " + str(depth_count))
-        else:
-            print("Graph is cyclic! Depth can be infinite!")
+        try:
+            if self.isCyclic()==0:
+                depth_count = 0
+                depth_count = self.levelDepthUtil(0, 0, depth_count)
+                print("Lowest depth is: " + str(depth_count))
+            else:
+                print("Graph is cyclic! Depth can be infinite!")
+        except:
+            print("ERROR: no depth found")
 
-# Driver program to the above graph class
+    # Driver program to the above graph class
 
-# number of nodes, nodes as Boolean variables, arcs, and probability tables on nodes
-# (prior probability on source nodes, conditional probabilities on other nodes).
+    # number of nodes, nodes as Boolean variables, arcs, and probability tables on nodes
+    # (prior probability on source nodes, conditional probabilities on other nodes).
+
+    # checks and returns boolean values
     def boolCheck(self, a):
-        if a.capitalize() == "T":
+        if a.capitalize()=="T":
             return True
-        elif a.capitalize() == "F":
+        elif a.capitalize()=="F":
             return False
 
 
 def main():
     parser = argparse.ArgumentParser(description='Process args')
     parser.add_argument('--userinput', '-u', type=int,
-                        help='0 or empty for defualt graph, 1 or greater for user input')
-
+        help='0 or empty for defualt graph, 1 or greater for user input')
     args = parser.parse_args()
 
     if args.userinput and int(args.userinput) > 0:
@@ -168,18 +179,18 @@ def main():
         print("To stop adding edges to the graph, enter 0 for src and 0 for dest")
         count = 0
         while True:
-            # this while loop asks for src, dest and bool, then inputs it as an adge
-            print("Vertex "+str(count)+": ")
+            # this while loop asks for src, dest and bool, then inputs it as an edge
+            print("Vertex " + str(count) + ": ")
             src = int(input("Enter source vertex: "))
             dest = int(input("Enter destination vertex: "))
             boolIn = str(input("Enter boolean value for this vertex: "))
             boolState = g.boolCheck(boolIn)
-            if src == 0 and dest == 0:
+            if src==0 and dest==0:
                 break
             else:
                 g.addEdge(src, dest, boolState)
 
-            if g.isCyclic() == 1:
+            if g.isCyclic()==1:
                 # if user graph is cyclic from most recent edge, removed most recent edge
                 print("That edge makes the graph cyclic! This edge will be removed.")
                 g.delEdge(src, dest)
@@ -203,21 +214,15 @@ def main():
         # g.addEdge(2, 0, True)
         #######including this is a cycle
 
-        if g.isCyclic() == 1:
+        if g.isCyclic()==1:
             print("Graph has a cycle")
         else:
             print("Graph has no cycle")
 
-        g.levelDepth()
 
     g.print_graph()
+    g.levelDepth()
 
-    # Driver program to the above graph class
-
-
-# number of nodes, nodes as Boolean variables, arcs, and probability tables on nodes
-# (prior probability on source nodes, conditional probabilities on other nodes).
-
-
-if __name__ == "__main__":
+# Driver program to the above graph class
+if __name__=="__main__":
     main()
