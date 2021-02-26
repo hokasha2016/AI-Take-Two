@@ -1,5 +1,6 @@
 import sys as sys
 import argparse
+import itertools
 
 from collections import defaultdict
 
@@ -173,6 +174,7 @@ class Graph:
                 parents.append(node.nodeDic["nodePos"])
         return parents
 
+
 # main function that calls everything
 def main():
     parser = argparse.ArgumentParser(description='Process args')
@@ -221,9 +223,23 @@ def main():
                 val = []
                 parents = g.findParents(node)
                 if not parents:
+                    # if node is root
                     val.append(input("Input probability value for root node: "))
                     node.setProbValue(val)
-
+                else:
+                    print("Parent nodes in probability table for node: " + str(node.nodeDic["nodePos"]))
+                    for x in parents:
+                        sys.stdout.write(str(x) + "\t")
+                    print('')
+                    table = list(itertools.product([True, False], repeat=len(parents)))
+                    for x in table:
+                        for y in x:
+                            if y == False:
+                                sys.stdout.write('F\t')
+                            else:
+                                sys.stdout.write('T\t')
+                        val.append(input(""))
+                    node.setProbValue(val)
 
     if not args.userinput:
         # default graph
