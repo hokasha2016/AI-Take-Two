@@ -126,9 +126,10 @@ class Graph:
     def print_graph(self):
         for i in self.graph:
             if i:
-                print("Adjacency list of vertex {}\n".format(i.nodeDic["nodePos"]), end="")
+                print("Information for vertex {}:\n".format(i.nodeDic["nodePos"]), end="")
                 temp = i.nodeDic
-                print(temp)
+                print("Node: "+str(temp["nodePos"])+", Boolean Value: "+str(temp["booleanState"])
+                      +", Destination:"+str(temp["destNode"]))
                 print(" \n")
             else:
                 print("ERROR: Unable to print, Vertex position does not exist!")
@@ -165,6 +166,8 @@ class Graph:
             return True
         elif a.capitalize()=="F":
             return False
+        else:
+            return None
 
     # finds all parent nodes of vertex v
     def findParents(self, v):
@@ -174,6 +177,31 @@ class Graph:
                 parents.append(node.nodeDic["nodePos"])
         return parents
 
+    def probability(self):
+        print("Now cycling through all nodes to get probability input for each node.")
+        for node in self.graph:
+            val = []
+            parents = self.findParents(node)
+            if not parents:
+                # if node is root
+                check = int(input("Input probability value for root node: "))
+                val.append(check)
+                node.setProbValue(val)
+            else:
+                print("Parent nodes in probability table for node position "
+                      + str(node.nodeDic["nodePos"]) + ":")
+                for x in parents:
+                    sys.stdout.write(str(x) + "\t")
+                print('')
+                table = list(itertools.product([True, False], repeat=len(parents)))
+                for x in table:
+                    for y in x:
+                        if y == False:
+                            sys.stdout.write('F\t')
+                        else:
+                            sys.stdout.write('T\t')
+                    val.append(input(""))
+                node.setProbValue(val)
 
 # main function that calls everything
 def main():
@@ -183,19 +211,33 @@ def main():
     args = parser.parse_args()
 
     if args.userinput and int(args.userinput) > 0:
-        if args.userinput < 2:
+        if int(args.userinput) == 1:
             # if user wants manual input
-            val = input("Enter number of verticies in the graph: ")
-            g = Graph(int(val))
+            val = int(input("Enter number of verticies in the graph: "))
+            g = Graph(val)
             print("To stop adding edges to the graph, enter 0 for src and 0 for dest")
             while True:
                 # this while loop asks for src, dest and bool, then inputs it as an edge
-                src = int(input("Enter source vertex: "))
-                dest = int(input("Enter destination vertex: "))
+                invalidIN = False
+                try:
+                    src = int(input("Enter source vertex: "))
+                except:
+                    invalidIN = True
+
+                try:
+                    dest = int(input("Enter destination vertex: "))
+                except:
+                    invalidIN = True
                 boolIn = str(input("Enter boolean value for this vertex: "))
                 boolState = g.boolCheck(boolIn)
                 if src==0 and dest==0:
                     break
+                elif src >= val or dest >= val:
+                    print("ERROR: Vertex value not within number of vertices. please try again")
+                elif invalidIN:
+                    print("ERROR: Source and destination values are only digits. please try again")
+                elif boolState == None:
+                    print("ERROR: Boolean value invalid. please try again")
                 else:
                     g.addEdge(src, dest, boolState)
 
@@ -205,6 +247,8 @@ def main():
                     g.delEdge(src, dest)
 
                 print(" ")
+            g.probability()
+
         else:
             # user wants to skip adding edges
             g = Graph(5)
@@ -216,32 +260,13 @@ def main():
             g.addEdge(2, 3, False)
             g.addEdge(3, 4, True)
 
-        if args.userinput < 3:
+        if int(args.userinput) == 2:
+            g.probability()
             # get probability input from user
-            print("Now cycling through all nodes to get probability input for each node.")
-            for node in g.graph:
-                val = []
-                parents = g.findParents(node)
-                if not parents:
-                    # if node is root
-                    val.append(input("Input probability value for root node: "))
-                    node.setProbValue(val)
-                else:
-                    print("Parent nodes in probability table for node: " + str(node.nodeDic["nodePos"]))
-                    for x in parents:
-                        sys.stdout.write(str(x) + "\t")
-                    print('')
-                    table = list(itertools.product([True, False], repeat=len(parents)))
-                    for x in table:
-                        for y in x:
-                            if y == False:
-                                sys.stdout.write('F\t')
-                            else:
-                                sys.stdout.write('T\t')
-                        val.append(input(""))
-                    node.setProbValue(val)
 
-    if not args.userinput:
+
+
+    if not args.userinput or int(args.userinput) == 0:
         # default graph
         g = Graph(5)
         g.addEdge(0, 1, False)
@@ -257,7 +282,7 @@ def main():
         # g.addEdge(2, 0, True)
         #######including this is a cycle
 
-        if g.isCyclic()==1:
+        if g.isCyclic() == 1:
             print("Graph has a cycle")
         else:
             print("Graph has no cycle")
