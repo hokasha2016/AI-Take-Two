@@ -129,7 +129,7 @@ class Graph:
                 print("Information for vertex {}:\n".format(i.nodeDic["nodePos"]), end="")
                 temp = i.nodeDic
                 print("Node: "+str(temp["nodePos"])+", Boolean Value: "+str(temp["booleanState"])
-                      +", Destination:"+str(temp["destNode"]))
+                      +", Destination:"+str(temp["destNode"])+str(temp["Probability Value"]))
                 print(" \n")
             else:
                 print("ERROR: Unable to print, Vertex position does not exist!")
@@ -184,7 +184,7 @@ class Graph:
             parents = self.findParents(node)
             if not parents:
                 # if node is root
-                check = int(input("Input probability value for root node: "))
+                check = float(input("Input probability value for root node: "))
                 val.append(check)
                 node.setProbValue(val)
             else:
@@ -264,8 +264,6 @@ def main():
             g.probability()
             # get probability input from user
 
-
-
     if not args.userinput or int(args.userinput) == 0:
         # default graph
         g = Graph(5)
@@ -276,6 +274,11 @@ def main():
         g.addEdge(1, 4, True)
         g.addEdge(2, 3, False)
         g.addEdge(3, 4, True)
+        g.graph[0].setProbValue(['0.95'])
+        g.graph[1].setProbValue(['0.25', '0.36'])
+        g.graph[2].setProbValue(['0.15', '0.28'])
+        g.graph[3].setProbValue(['0.12', '0.87', '0.126', '0.96'])
+        g.graph[4].setProbValue(['0.13', '0.45', '0.67', '0.36', '0.754', '0.12', '0.28', '0.39'])
 
         ####above is no cycle
         # g.addEdge(0, 2, False)
