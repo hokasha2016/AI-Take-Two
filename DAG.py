@@ -129,10 +129,11 @@ class Graph:
                 print("Information for vertex {}:\n".format(i.nodeDic["nodePos"]), end="")
                 temp = i.nodeDic
                 print("Node: "+str(temp["nodePos"])+", Boolean Value: "+str(temp["booleanState"])
-                      +", Destination:"+str(temp["destNode"])+str(temp["Probability Value"]))
+                      +", Destination:"+str(temp["destNode"]))
                 print(" \n")
             else:
                 print("ERROR: Unable to print, Vertex position does not exist!")
+        self.printProbability()
 
     # recursive function used by levelDepth
     def levelDepthUtil(self, v, count, depth_count):
@@ -188,7 +189,7 @@ class Graph:
                 val.append(check)
                 node.setProbValue(val)
             else:
-                print("Parent nodes in probability table for node position "
+                print("Parent nodes in probability table for node "
                       + str(node.nodeDic["nodePos"]) + ":")
                 for x in parents:
                     sys.stdout.write(str(x) + "\t")
@@ -203,11 +204,35 @@ class Graph:
                     val.append(input(""))
                 node.setProbValue(val)
 
+    def printProbability(self):
+        for node in self.graph:
+            parents = self.findParents(node)
+            if not parents:
+                # if node is root
+                print("Probability value for root node: "+str(node.nodeDic["Probability Value"][0]))
+            else:
+                print("Parent nodes in probability table for node "
+                      + str(node.nodeDic["nodePos"]) + ":")
+                for x in parents:
+                    sys.stdout.write(str(x) + "\t")
+                print('')
+                table = list(itertools.product([True, False], repeat=len(parents)))
+                counter=0
+                for x in table:
+                    for y in x:
+                        if y == False:
+                            sys.stdout.write('F\t')
+                        else:
+                            sys.stdout.write('T\t')
+
+                    print(node.nodeDic["Probability Value"][counter])
+                    counter+=1
+
 # main function that calls everything
 def main():
     parser = argparse.ArgumentParser(description='Process args')
     parser.add_argument('--userinput', '-u', type=int,
-        help='0 or empty for defualt graph, 1 or greater for user input')
+        help='0 or empty for default graph, 1 or greater for user input')
     args = parser.parse_args()
 
     if args.userinput and int(args.userinput) > 0:
@@ -274,11 +299,11 @@ def main():
         g.addEdge(1, 4, True)
         g.addEdge(2, 3, False)
         g.addEdge(3, 4, True)
-        g.graph[0].setProbValue(['0.95'])
-        g.graph[1].setProbValue(['0.25', '0.36'])
-        g.graph[2].setProbValue(['0.15', '0.28'])
-        g.graph[3].setProbValue(['0.12', '0.87', '0.126', '0.96'])
-        g.graph[4].setProbValue(['0.13', '0.45', '0.67', '0.36', '0.754', '0.12', '0.28', '0.39'])
+        g.graph[0].setProbValue([0.95])
+        g.graph[1].setProbValue([0.25, 0.36])
+        g.graph[2].setProbValue([0.15, 0.28])
+        g.graph[3].setProbValue([0.12, 0.87, 0.126, 0.96])
+        g.graph[4].setProbValue([0.13, 0.45, 0.67, 0.36, 0.754, 0.12, 0.28, 0.39])
 
         ####above is no cycle
         # g.addEdge(0, 2, False)
@@ -290,8 +315,10 @@ def main():
         else:
             print("Graph has no cycle")
 
-    g.print_graph()
     g.levelDepth()
+    print(" ")
+    print("Printing Graph Data?")
+    g.print_graph()
 
 # Driver program to the above graph class
 if __name__=="__main__":
