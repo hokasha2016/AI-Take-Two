@@ -161,11 +161,6 @@ class Graph:
         except:
             print("ERROR: no depth found")
 
-    # Driver program to the above graph class
-
-    # number of nodes, nodes as Boolean variables, arcs, and probability tables on nodes
-    # (prior probability on source nodes, conditional probabilities on other nodes).
-
     # checks and returns boolean values
     def boolCheck(self, a):
         if a.capitalize()=="T":
@@ -246,7 +241,9 @@ def main():
 
     if args.userinput and int(args.userinput) > 0:
         if int(args.userinput) == 1:
-            # if user wants manual input
+            # if user wants manual input:
+            # number of nodes, nodes as Boolean variables, arcs, and probability tables on nodes
+            # (prior probability on source nodes, conditional probabilities on other nodes).
             val = int(input("Enter number of verticies in the graph: "))
             g = Graph(val)
             print("To stop adding edges to the graph, enter 0 for src and 0 for dest")
