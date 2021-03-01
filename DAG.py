@@ -4,6 +4,11 @@ import itertools
 
 from collections import defaultdict
 
+"""
+DAG.py
+Made by: Alexander Esenwein & Hussein Okasha
+Email: aesenwein2018@my.fit.edu & hokasha2016@my.fit.edu
+"""
 
 ####NODE OBJECT###
 class NodeD:
@@ -71,7 +76,7 @@ class Graph:
             temp.nodeDic["nodePos"] = dest
             self.graph[dest] = temp
 
-    def delEdge(self, src, dest):
+    def delEdge(self, src, dest): #Delete-edge function
         # search for src in graph
         for node2 in self.graph:
             if node2 and node2.nodeDic["nodePos"]==src:
@@ -189,11 +194,13 @@ class Graph:
                 val.append(check)
                 node.setProbValue(val)
             else:
+                #if node is a child
                 print("Parent nodes in probability table for node "
                       + str(node.nodeDic["nodePos"]) + ":")
                 for x in parents:
                     sys.stdout.write(str(x) + "\t")
                 print('')
+                #prints T/F table to input probability value of each node
                 table = list(itertools.product([True, False], repeat=len(parents)))
                 for x in table:
                     for y in x:
@@ -204,13 +211,14 @@ class Graph:
                     val.append(input(""))
                 node.setProbValue(val)
 
-    def printProbability(self):
+    def printProbability(self): #display probability results
         for node in self.graph:
             parents = self.findParents(node)
             if not parents:
                 # if node is root
                 print("Probability value for root node: "+str(node.nodeDic["Probability Value"][0]))
             else:
+                # if node is a child
                 print("Parent nodes in probability table for node "
                       + str(node.nodeDic["nodePos"]) + ":")
                 for x in parents:
@@ -218,13 +226,14 @@ class Graph:
                 print('')
                 table = list(itertools.product([True, False], repeat=len(parents)))
                 counter=0
+                # prints T/F table to input probability value of each node
                 for x in table:
                     for y in x:
                         if y == False:
                             sys.stdout.write('F\t')
                         else:
                             sys.stdout.write('T\t')
-
+                    #prints value at certain probability, neatly displayed the same way it was stored
                     print(node.nodeDic["Probability Value"][counter])
                     counter+=1
 
@@ -243,27 +252,31 @@ def main():
             print("To stop adding edges to the graph, enter 0 for src and 0 for dest")
             while True:
                 # this while loop asks for src, dest and bool, then inputs it as an edge
-                invalidIN = False
+                invalidIN = False #flag for invalid dest and src values
                 try:
                     src = int(input("Enter source vertex: "))
                 except:
-                    invalidIN = True
+                    invalidIN = True #if src input is a letter
 
                 try:
                     dest = int(input("Enter destination vertex: "))
                 except:
-                    invalidIN = True
+                    invalidIN = True #if dest input is a letter
+                #Bool values
                 boolIn = str(input("Enter boolean value for this vertex: "))
-                boolState = g.boolCheck(boolIn)
-                if src==0 and dest==0:
+                boolState = g.boolCheck(boolIn) #returns boolstate , True of False based on input. None if invalid
+                # input
+                if src==0 and dest==0: #exits input loop
                     break
                 elif src >= val or dest >= val:
+                    #check incase input value for src and dest more than number of verticies
+                    #initally put
                     print("ERROR: Vertex value not within number of vertices. please try again")
-                elif invalidIN:
+                elif invalidIN: #check for lifted flag of invalid src and dest inputs
                     print("ERROR: Source and destination values are only digits. please try again")
-                elif boolState == None:
+                elif boolState == None: #check for flag of invalid boolean input
                     print("ERROR: Boolean value invalid. please try again")
-                else:
+                else:#if passed all checks, adds edge to the graph
                     g.addEdge(src, dest, boolState)
 
                 if g.isCyclic()==1:
@@ -317,7 +330,7 @@ def main():
 
     g.levelDepth()
     print(" ")
-    print("Printing Graph Data?")
+    print("Printing Graph Data")
     g.print_graph()
 
 # Driver program to the above graph class
