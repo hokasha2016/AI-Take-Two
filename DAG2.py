@@ -5,7 +5,7 @@ import itertools
 from collections import defaultdict
 
 """
-DAG.py
+DAG2.py
 Made by: Alexander Esenwein & Hussein Okasha
 Email: aesenwein2018@my.fit.edu & hokasha2016@my.fit.edu
 """
