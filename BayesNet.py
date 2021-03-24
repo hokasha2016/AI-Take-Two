@@ -495,13 +495,12 @@ def main():
 		assert (alg=='enum' or alg=='elim')
 
 		q = sys.argv[3]
+		query(fname, alg, q)
 	except SyntaxError:
 		print('Invalid syntax for bayes net file %s' % sys.argv[1])
 	except IndexError:
 		print('Not enough argument.')
 		print('Usage: %s <bayesnet> <enum|elim> <query>' % sys.argv[0])
-
-	query(fname, alg, q)
 
 
 if __name__=='__main__':
