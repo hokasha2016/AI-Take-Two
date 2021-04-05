@@ -2,12 +2,6 @@ import argparse
 import itertools
 import sys
 
-"""
-DAG2.py
-Made by: Alexander Esenwein & Hussein Okasha
-Email: aesenwein2018@my.fit.edu & hokasha2016@my.fit.edu
-"""
-
 ####NODE OBJECT###
 class NodeD:
     def __init__(self, Boolie):  # Makes node dictionary object
