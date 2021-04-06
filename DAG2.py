@@ -515,9 +515,9 @@ def main():
         q = ''
         if not fname:
             usr = input("Choose file name or press 1 for default file, alarm.bn, or 2 for secondary file, custom.bn\n")
-            if int(usr) == 1:
+            if usr == '1':
                 fname = 'alarm.bn'
-            elif int(usr) == 2:
+            elif usr == '2':
                 fname = 'custom.bn'
             else:
                 fname = usr
@@ -529,7 +529,7 @@ def main():
 
         if not q:
             usr = input("Enter a query or press 1 for default query P(A)\n")
-            if int(usr) == 1:
+            if usr == '1':
                 q = "P(A)"
             else:
                 q = usr
