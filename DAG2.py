@@ -528,9 +528,9 @@ def main():
                 alg = usr
 
         if not q:
-            usr = input("Enter a query or press 1 for default query P(A)\n")
+            usr = input("Enter a query or press 1 for default query P(J|M=t)\n")
             if usr == '1':
-                q = "P(A)"
+                q = "P(J|M=t)"
             else:
                 q = usr
         query(fname, alg, q)
